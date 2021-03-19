@@ -1,0 +1,20 @@
+Map_reduce_6c
+
+#Copying python files from local disk to docker
+docker cp "D:\Dysk Google\aaData Science RWTH\Semester 2\Introduction to Data Science\Assignment 2\assignment-code/" 259af2b87511:/usr/local/hadoop/
+
+# run mapreduce
+hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-2.7.4.jar \
+-file /usr/local/hadoop/assignment-code/performance_mapper.py \
+-mapper "python performance_mapper.py" \
+-file /usr/local/hadoop/assignment-code/performance_reducer.py \
+-reducer "python performance_reducer.py" \
+-input "/input/(ATM)-final-log.tsv" \
+-output /output/Assignment2-6c/
+
+
+#Copying output file to the container
+hadoop fs -copyToLocal /output/Assignment2-6c/part-00000 /usr/local/hadoop/assignment2-6c.txt
+
+#Copying output file to the local filesystem
+docker cp 259af2b87511:/usr/local/hadoop/assignment2-6c.txt "D:\Dysk Google\aaData Science RWTH\Semester 2\Introduction to Data Science\Assignment 2\output"

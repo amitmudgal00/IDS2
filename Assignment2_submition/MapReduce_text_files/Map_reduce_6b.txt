@@ -1,0 +1,31 @@
+container id: 259af2b87511
+
+#Copying python files from local disk to docker
+docker cp "D:\Dysk Google\aaData Science RWTH\Semester 2\Introduction to Data Science\Assignment 2\assignment-code/" 259af2b87511:/usr/local/hadoop/
+
+#first run mapreduce
+hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-2.7.4.jar \
+-file /usr/local/hadoop/assignment-code/pm_mapper1.py \
+-mapper "python pm_mapper1.py" \
+-file /usr/local/hadoop/assignment-code/pm_reducer1.py \
+-reducer "python pm_reducer1.py" \
+-input "/input/(ATM)-final-log.tsv" \
+-output /output/Assignment2-6b
+
+# second run mapreduce
+hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-2.7.4.jar \
+-file /usr/local/hadoop/assignment-code/pm_mapper2.py \
+-mapper "python pm_mapper2.py" \
+-file /usr/local/hadoop/assignment-code/pm_reducer2.py \
+-reducer "python pm_reducer2.py" \
+-input /output/Assignment2-6b/part-00000 \
+-output /output/Assignment2-6b-final
+
+#Copying output file to the container
+hadoop fs -copyToLocal /output/Assignment2-6b-final/part-00000 /usr/local/hadoop/assignment2-6b.txt
+
+#Copying output file to the local filesystem
+docker cp 259af2b87511:/usr/local/hadoop/assignment2-6b.txt "D:\Dysk Google\aaData Science RWTH\Semester 2\Introduction to Data Science\Assignment 2\output"
+
+
+
